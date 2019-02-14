@@ -492,6 +492,7 @@
     <ClCompile Include="aribb25\B25Decoder.cpp" />
     <ClCompile Include="aribb25\b_cas_card.c" />
     <ClCompile Include="aribb25\multi2.c" />
+    <ClCompile Include="aribb25\multi2_simd.c" />
     <ClCompile Include="aribb25\ts_section_parser.c" />
     <ClCompile Include="BonDriverProxyEx.cpp" />
   </ItemGroup>
@@ -511,7 +512,9 @@
     <ClInclude Include="aribb25\b_cas_card_error_code.h" />
     <ClInclude Include="aribb25\multi2.h" />
     <ClInclude Include="aribb25\multi2_error_code.h" />
+    <ClInclude Include="aribb25\multi2_simd.h" />
     <ClInclude Include="aribb25\portable.h" />
+    <ClInclude Include="aribb25\simd_instruction_type.h" />
     <ClInclude Include="aribb25\ts_common_types.h" />
     <ClInclude Include="aribb25\ts_section_parser.h" />
     <ClInclude Include="aribb25\ts_section_parser_error_code.h" />

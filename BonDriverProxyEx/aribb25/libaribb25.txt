@@ -1,1 +1,1 @@
-https://github.com/epgdatacapbon/libaribb25/tree/master/aribb25
+https://github.com/HaijinW/libaribb25/tree/feature/simd

@@ -39,6 +39,9 @@
     <ClCompile Include="aribb25\B25Decoder.cpp">
       <Filter>ソース ファイル\aribb25</Filter>
     </ClCompile>
+    <ClCompile Include="aribb25\multi2_simd.c">
+      <Filter>ソース ファイル\aribb25</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="BonDriverProxyEx.rc">
@@ -95,6 +98,12 @@
       <Filter>ヘッダー ファイル\aribb25</Filter>
     </ClInclude>
     <ClInclude Include="aribb25\B25Decoder.h">
+      <Filter>ヘッダー ファイル\aribb25</Filter>
+    </ClInclude>
+    <ClInclude Include="aribb25\multi2_simd.h">
+      <Filter>ヘッダー ファイル\aribb25</Filter>
+    </ClInclude>
+    <ClInclude Include="aribb25\simd_instruction_type.h">
       <Filter>ヘッダー ファイル\aribb25</Filter>
     </ClInclude>
   </ItemGroup>
