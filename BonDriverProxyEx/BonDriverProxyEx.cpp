@@ -815,19 +815,23 @@ DWORD cProxyServerEx::Process()
 										m_pTsReaderArg->TsReceiversList.push_back(this);
 										m_pTsReaderArg->TsLock.Leave();
 										// 切り替え先の共有インスタンスで無効のままだと問題が生じるので有効化する
-										if (!m_pTsReaderArg->IsB25Enabled())
+										const BOOL bDesiredUseB25 = static_cast<BOOL>(pPh->m_pPacket->head.m_bReserved1 & eDesireToUseB25);
+										if (bDesiredUseB25 && g_b25_enable)
 										{
-											const BOOL bDesiredUseB25 = static_cast<BOOL>(pPh->m_pPacket->head.m_bReserved1 & eDesireToUseB25);
-											if (bDesiredUseB25 && g_b25_enable)
+											if (m_pTsReaderArg->IsB25Enabled())
+												m_pTsReaderArg->b25EnabledSet.emplace(this);
+											else
 											{
 #ifdef USE_B25_DECODER_DLL
 												if (m_pTsReaderArg->b25.load() == FALSE)
 													g_b25_enable = FALSE;
+												else
+													m_pTsReaderArg->b25EnabledSet.emplace(this);
 #else
-												m_pTsReaderArg->b25.init();
-#endif
+												if (m_pTsReaderArg->b25.init() == 0)
+													m_pTsReaderArg->b25EnabledSet.emplace(this);
+#endif // USE_B25_DECODER_DLL
 											}
-											m_pTsReaderArg->bB25Enable = bDesiredUseB25 && g_b25_enable;
 										}
 									}
 #if _DEBUG && DETAILLOG2
@@ -1008,11 +1012,13 @@ DWORD cProxyServerEx::Process()
 #ifdef USE_B25_DECODER_DLL
 										if (m_pTsReaderArg->b25.load() == FALSE)
 											g_b25_enable = FALSE;
+										else
+											m_pTsReaderArg->b25EnabledSet.emplace(this);
 #else
-										m_pTsReaderArg->b25.init();
+										if (m_pTsReaderArg->b25.init() == 0)
+											m_pTsReaderArg->b25EnabledSet.emplace(this);
 #endif // USE_B25_DECODER_DLL
 									}
-									m_pTsReaderArg->bB25Enable = bDesiredUseB25 && g_b25_enable;
 									m_hTsRead = ::CreateThread(NULL, 0, cProxyServerEx::TsReader, m_pTsReaderArg, 0, NULL);
 									if (m_hTsRead == NULL)
 									{
@@ -1519,6 +1525,16 @@ void cProxyServerEx::StopTsReceive()
 		m_hTsRead = NULL;
 		delete m_pTsReaderArg;
 		m_pTsReaderArg = NULL;
+	}
+	else
+	{
+		m_pTsReaderArg->b25EnabledSet.erase(this);
+#ifdef USE_B25_DECODER_DLL
+		if (m_pTsReaderArg->b25EnabledSet.empty() && m_pTsReaderArg->b25.is_loaded())
+#else
+		if (m_pTsReaderArg->b25EnabledSet.empty())
+#endif
+			m_pTsReaderArg->b25.release();
 	}
 }
 

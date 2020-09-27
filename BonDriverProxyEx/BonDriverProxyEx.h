@@ -8,6 +8,7 @@
 #include <list>
 #include <queue>
 #include <unordered_map>
+#include <unordered_set>
 #include <atomic>
 #include <typeinfo>
 #include "Common.h"
@@ -75,7 +76,7 @@ struct stTsReaderArg {
 #else
 	B25Decoder b25;
 #endif // USE_B25_DECODER_DLL
-	BOOL bB25Enable;
+	std::unordered_set<cProxyServerEx *> b25EnabledSet;
 	stTsReaderArg()
 		: pIBon(NULL)
 		, StopTsRead(FALSE)
@@ -85,16 +86,16 @@ struct stTsReaderArg {
 		, WaitExclusivePrivList()
 		, TsLock()
 		, b25()
-		, bB25Enable(FALSE)
+		, b25EnabledSet()
 	{
 	};
 
 	BOOL IsB25Enabled()
 	{
 #ifdef USE_B25_DECODER_DLL
-		return bB25Enable && b25.is_loaded();
+		return !b25EnabledSet.empty() && b25.is_loaded();
 #else
-		return bB25Enable;
+		return !b25EnabledSet.empty();
 #endif // USE_B25_DECODER_DLL
 	};
 };
