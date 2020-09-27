@@ -31,7 +31,7 @@ enum enumCommand {
 
 enum enumOption {
 	eNoOption       = 0x000,
-	eDesireToUseB25 = 0X001,
+	eDesireToUseB25 = 0x001,
 };
 
 #pragma pack(push, 1)
