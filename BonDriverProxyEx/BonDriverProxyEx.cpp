@@ -814,6 +814,21 @@ DWORD cProxyServerEx::Process()
 										m_pTsReaderArg->TsLock.Enter();
 										m_pTsReaderArg->TsReceiversList.push_back(this);
 										m_pTsReaderArg->TsLock.Leave();
+										// 切り替え先の共有インスタンスで無効のままだと問題が生じるので有効化する
+										if (!m_pTsReaderArg->IsB25Enabled())
+										{
+											const BOOL bDesiredUseB25 = static_cast<BOOL>(pPh->m_pPacket->head.m_bReserved1 & eDesireToUseB25);
+											if (bDesiredUseB25 && g_b25_enable)
+											{
+#ifdef USE_B25_DECODER_DLL
+												if (m_pTsReaderArg->b25.load() == FALSE)
+													g_b25_enable = FALSE;
+#else
+												m_pTsReaderArg->b25.init();
+#endif
+											}
+											m_pTsReaderArg->bB25Enable = bDesiredUseB25 && g_b25_enable;
+										}
 									}
 #if _DEBUG && DETAILLOG2
 									_RPT3(_CRT_WARN, "** found! ** : m_hModule[%p] / m_iDriverNo[%d] / m_pIBon[%p]\n", m_hModule, m_iDriverNo, m_pIBon);
